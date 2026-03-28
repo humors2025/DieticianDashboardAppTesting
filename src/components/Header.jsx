@@ -300,7 +300,7 @@ const hideHeaderPaths = [
 
   const menu = [
     { name: "Dashboard", icon: "/icons/hugeicons_home-05.svg", path: "/dashboard" },
-    { name: "Client", icon: "/icons/hugeicons_user-group.png", path: "/client" },
+    // { name: "Client", icon: "/icons/hugeicons_user-group.png", path: "/client" },
     // { name: "Messages", icon: "/icons/hugeicons_message-02.svg", path: "/messages" },
     { name: "Settings", icon: "/icons/hugeicons_settings-03.svg", path: "/settings" },
   ];
@@ -315,7 +315,7 @@ const isPartnerUser = dieticianId !== "" && dieticianId !== "Qua";
   // ✅ central mapping for partner routes
   const partnerRouteMap = {
     Dashboard: "/partners/dashboard",
-    Client: "/partners/client",
+    // Client: "/partners/client",
     // Messages: "/partners/messages",
     Settings: "/partners/settings",
   };
