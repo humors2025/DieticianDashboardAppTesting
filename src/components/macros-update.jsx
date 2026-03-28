@@ -11,10 +11,15 @@ import { useEffect } from "react";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
-// ✅ One-sided rounded cap with clipping fix
+// ✅ One-sided rounded cap with clipping fix - Now only runs on doughnut charts
 const oneEndRoundedPlugin = {
   id: "oneEndRounded",
   afterDatasetDraw(chart) {
+    // ✅ Only run for doughnut/pie charts, not for line/bar charts
+    if (chart.config.type !== 'doughnut' && chart.config.type !== 'pie') {
+      return;
+    }
+
     const { ctx } = chart;
     const meta = chart.getDatasetMeta(0);
 
@@ -285,8 +290,6 @@ export default function MacrosUpdate() {
     </>
   );
 }
-
-
 
 
 

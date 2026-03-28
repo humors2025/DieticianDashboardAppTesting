@@ -364,7 +364,38 @@ export const deleteDietPlanService = async (dietPlanId, clientId, dietitianId) =
 
 
 
+export const fetchClientsDashboard = async (
+  dieticianId,
+  type = "all",
+  page = 1,
+  date
+) => {
+  return apiFetcher(API_ENDPOINTS.CLIENT.CLIENTS_DASHBOARD, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      dietician_id: dieticianId,
+      type: type,
+      page: page,
+      date: date,  
+    }),
+  });
+};
 
+
+export const fetchCalendarData = async (dieticianId) => {
+  return apiFetcher(API_ENDPOINTS.CALENDER.CALENDERTABLE, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      dietician_id: dieticianId,
+    }),
+  });
+};
 
 
 

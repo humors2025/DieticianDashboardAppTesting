@@ -197,6 +197,8 @@
 
 
 // user-profile.jsx (or user-profile.tsx)
+
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -358,14 +360,16 @@ export const UserProfile = ({
             <MessageStyleSearch />
           ) : (
             // ✅ Dashboard Greeting UI
-            <div className="flex flex-col gap-[15px]">
+            <>
+            {/* <div className="flex flex-col gap-[15px]">
               <p className="text-[#252525] text-[12px] font-normal leading-[110%] tracking-[-0.24px]">
                 {currentDate}
               </p>
               <p className="text-[#252525] text-[34px] font-normal leading-none tracking-[-2.04px]">
                 Hello, Dt. {dieticianName}
               </p>
-            </div>
+            </div> */}
+            </>
           )}
         </div>
       </div>

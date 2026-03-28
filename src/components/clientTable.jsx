@@ -115,38 +115,45 @@ export default function ClientTable({
     }
   };
 
-  // Transform API data to match your table structure
-  const transformClientData = (apiData) => {
-    if (!apiData || !Array.isArray(apiData)) return [];
+const transformClientData = (apiData) => {
+  if (!apiData || !Array.isArray(apiData)) return [];
 
-    return apiData.map((client) => {
-      const relevantPlan = getMostRelevantPlan(client);
+  return apiData.map((client) => ({
+    name: client.client_name || "N/A",
+    age: client.age || "N/A",
+    gender: client.gender || "N/A",
 
-      return {
-        name: client.profile_name || "N/A",
-        age: client.age || "N/A", // Store age as number for sorting
-        gender: client.gender || "N/A",
-        displayAge: `${client.age || "N/A"} years, ${client.gender || "N/A"}`,
-        dateCreated: formatDate(client.dttm),
-        rawDate: client.dttm, // Store raw date for sorting
-        referenceCode: client.profile_id || "N/A",
-        planStatus: getPlanStatus(client.plans_count),
-        planType: getPlanType(relevantPlan),
-        lastLogged: "",
-        metabolismStatus: "",
-        metabolismColor: "#DA5747",
-        metabolismBg: "#FFEDED",
-        dietGoal: "-",
-        dietGoalDate: formatDate(client.dttm),
-        plansCompleted: client.plans_count?.completed || 0,
-        testAssigned: "-",
-        originalData: client,
-        image: client.profile_image_url,
-        dieticianId: client.dietician_id,
-        profileId: client.profile_id,
-      };
-    });
-  };
+    displayAge: `${client.age || "N/A"} years, ${client.gender || "N/A"}`,
+
+    // Date
+    // dateCreated: client.p_created || "No test yet",
+    dateCreated: client.p_created
+  ? client.p_created.split(" ")[0]
+  : "No date",
+    rawDate: client.last_logged_date || null,
+
+    referenceCode: client.profile_id,
+
+    // Fitness goal
+    fitness_goal: client.fitness_goal || "-",
+
+    // Metabolism
+ metabolism_score:
+  client.metabolism_score !== null && !isNaN(client.metabolism_score)
+    ? `${Number(client.metabolism_score).toFixed(0)}%`
+    : "No test",
+
+    // Last test
+    last_logged: client.last_logged || "No test yet",
+
+    image: client.p_image && client.p_image !== "NA"
+  ? client.p_image
+  : "/icons/hugeicons_user-circle-02.svg",
+
+    dieticianId: client.dietician_id,
+    profileId: client.profile_id,
+  }));
+};
 
   // Filter data based on activeTab
   let filteredByTab = clientsList;
@@ -226,7 +233,8 @@ export default function ClientTable({
     const params = new URLSearchParams({
       profile_id: client.profileId,
     });
-    router.push(`/profile?${params.toString()}`);
+    // router.push(`/profile?${params.toString()}`);
+    router.push(`/partners/clients-demo`);
   };
 
   // Filter sorted clients based on search
@@ -250,25 +258,40 @@ export default function ClientTable({
       )}
 
       <div>
-        <div className="rounded-[15px] overflow-hidden h-[calc(100vh-220px)]">
+        <div className="rounded-[15px] overflow-hidden h-[calc(100vh-220px)] ">
           <div className="h-full overflow-y-auto scroll-hide">
             <table className="w-full bg-[#FFFFFF] border-collapse relative">
               <thead className="sticky top-0 z-10">
                 <tr className="bg-[#F0F0F0]">
-                  <th className="px-[15px] py-5 text-left rounded-tl-[15px] rounded-bl-[15px]">
+                  <th className="px-[15px] py-5 text-left rounded-tl-[15px]">
                     <p className="text-[#535359] font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
                       Client Name {sortOption === "A to Z" && "↑"}{" "}
                       {sortOption === "Z to A" && "↓"}
                     </p>
                   </th>
-                  <th className="px-[15px]  py-5 text-left rounded-tr-[15px] rounded-br-[15px]">
+                  <th className="px-[15px] py-5 text-center">
                     <p className="text-[#535359] font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
                       Date Created {sortOption === "Recently Added" && "↓"}
                     </p>
                   </th>
+                  <th className="px-[15px] py-5 text-center">
+                    <p className="text-[#535359] font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
+                      Fitness Goal
+                    </p>
+                  </th>
+                  <th className="px-[15px] py-5 text-center">
+                    <p className="text-[#535359] font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
+                      Metabolism Score
+                    </p>
+                  </th>
+                  <th className="px-[15px] py-5 text-center rounded-tr-[15px]">
+                    <p className="text-[#535359] font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
+                      Last Tested
+                    </p>
+                  </th>
 
                   {showTestTaken && (
-                    <th className="px-[15px]  py-5 text-left rounded-tr-[15px] rounded-br-[15px]">
+                    <th className="px-[15px] py-5 text-left">
                       <p className="text-[#535359] text-center font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
                         Test Taken
                       </p>
@@ -276,14 +299,14 @@ export default function ClientTable({
                   )}
 
                   {testAssigned && (
-                    <th className="px-[15px]  py-5 text-left rounded-tr-[15px] rounded-br-[15px]">
+                    <th className="px-[15px] py-5 text-left">
                       <p className="text-[#535359] text-center font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
                         Test Assigned
                       </p>
                     </th>
                   )}
 
-                  <th className="px-[15px]  py-5 text-left hidden rounded-tr-[15px] rounded-br-[15px]">
+                  <th className="px-[15px] py-5 text-left hidden">
                     <p className="text-[#535359] font-normal text-xs leading-[1.1] tracking-[-0.24px] font-['Poppins']">
                       Actions
                     </p>
@@ -304,15 +327,15 @@ export default function ClientTable({
                   filteredClients.map((client, idx) => (
                     <tr
                       key={`${client.profileId}-${idx}`}
-                      className="border-b border-[#D9D9D9] align-top cursor-pointer [&>td]:cursor-pointer"
+                      className="border-b border-[#D9D9D9] align-top cursor-pointer [&>td]:cursor-pointer hover:bg-gray-50"
                       onClick={() => handleRowClick(client)}
                     >
                       {/* Client Name */}
-                      <td className="px-[15px] py-5 ">
+                      <td className="px-[15px] py-5">
                         <div className="flex gap-[15px]">
                           <div className="relative h-8 w-8 rounded-full overflow-hidden bg-[#F0F0F0]">
                             <Image
-                              src={
+                               src={
                                 client.image || "/icons/hugeicons_user-circle-02.svg"
                               }
                               alt={client.name || "profile"}
@@ -334,9 +357,27 @@ export default function ClientTable({
                       </td>
 
                       {/* Date Created */}
-                      <td className="px-[15px] py-5">
+                      <td className="px-[15px] py-5 text-center">
                         <span className="text-[#A1A1A1] text-[12px] font-normal leading-[126%] tracking-[-0.24px]">
                           {client.dateCreated}
+                        </span>
+                      </td>
+
+                      <td className="px-[15px] py-5 text-center">
+                        <span className="text-[#A1A1A1] text-[12px] font-normal leading-[126%] tracking-[-0.24px]">
+                          {client.fitness_goal}
+                        </span>
+                      </td>
+
+                      <td className="px-[15px] py-5 text-center">
+                        <span className="text-[#A1A1A1] text-[12px] font-normal leading-[126%] tracking-[-0.24px]">
+                          {client.metabolism_score}
+                        </span>
+                      </td>
+
+                      <td className="px-[15px] py-5 text-center">
+                        <span className="text-[#A1A1A1] text-[12px] font-normal leading-[126%] tracking-[-0.24px]">
+                          {client.last_logged}
                         </span>
                       </td>
 
@@ -387,3 +428,15 @@ export default function ClientTable({
     </>
   );
 }
+
+
+
+
+
+
+
+
+
+
+
+

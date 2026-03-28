@@ -14,7 +14,11 @@ export const API_ENDPOINTS = {
     UPDATEPASSWORDSERVICE:"/dietitian/api/web/reset_password.php"
   },
   CLIENT:{
-    CLIENTTABLE:"/dietitian/api/web/get_clients_with_diet_plan.php"
+    CLIENTTABLE:"/dietitian/api/web/get_clients_with_diet_plan.php",
+     CLIENTS_DASHBOARD:"/dietitian/api/web/get-clients-data-total-missed-test.php",
+  },
+  CALENDER:{
+CALENDERTABLE:"/dietitian/api/web/get_calander_fill_data.php"
   },
   PROFILESCOREANALYSIS:{
     GRAPH:"/dietitian/api/web/get_score_trend1.php",
